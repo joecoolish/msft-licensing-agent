@@ -1,0 +1,17 @@
+id: sql-enterprise-sa-unlimited
+expert_reviewed: false
+inventory:
+  context: {agreement_type: EA, software_assurance: {SQL Server: 'yes'}, subscription: {SQL Server: 'no'}}
+  hosts:
+    - {id: h1, processors: 2, cores_per_processor: 16, hypervisor: VMware, cluster_id: null}
+  os_environments:
+    - {id: v0, host_id: h1, cluster_id: null, kind: virtual, virtual_cores: 4, workloads: [SQL Server], sql_role: active}
+    - {id: v1, host_id: h1, cluster_id: null, kind: virtual, virtual_cores: 4, workloads: [SQL Server], sql_role: active}
+  products:
+    - {product: SQL Server, edition: Enterprise, version: '2025', where_deployed: [v0, v1], licensing_model: unlimited_virtualization}
+  users_devices: null
+expected:
+  line_items:
+    - {product: SQL Server, edition: Enterprise, license_type: 2-core pack, quantity: 16}
+  missing_inputs: []
+  unverified_rules_used: [sql_unlimited]

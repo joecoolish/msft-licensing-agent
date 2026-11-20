@@ -1,0 +1,21 @@
+id: windows-datacenter-unlimited-oses
+expert_reviewed: false
+inventory:
+  context: {agreement_type: EA, software_assurance: null, subscription: null}
+  hosts:
+    - {id: h1, processors: 1, cores_per_processor: 32, hypervisor: VMware, cluster_id: null}
+  os_environments:
+    - {id: v0, host_id: h1, cluster_id: null, kind: virtual, virtual_cores: 4, workloads: [Windows Server]}
+    - {id: v1, host_id: h1, cluster_id: null, kind: virtual, virtual_cores: 4, workloads: [Windows Server]}
+    - {id: v2, host_id: h1, cluster_id: null, kind: virtual, virtual_cores: 4, workloads: [Windows Server]}
+    - {id: v3, host_id: h1, cluster_id: null, kind: virtual, virtual_cores: 4, workloads: [Windows Server]}
+    - {id: v4, host_id: h1, cluster_id: null, kind: virtual, virtual_cores: 4, workloads: [Windows Server]}
+  products:
+    - {product: Windows Server, edition: Datacenter, version: '2025', where_deployed: [v0, v1, v2, v3, v4], licensing_model: physical_core}
+  users_devices: {internal_users: 25, devices: 12, external_users: 0, cal_preference: device, complete_population: true}
+expected:
+  line_items:
+    - {product: Windows Server, edition: Datacenter, license_type: 2-core pack, quantity: 16}
+    - {product: Windows Server, edition: Not edition-specific, license_type: Device CAL, quantity: 12}
+  missing_inputs: []
+  unverified_rules_used: [windows_physical, windows_cal]

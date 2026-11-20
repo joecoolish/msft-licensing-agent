@@ -1,0 +1,30 @@
+schema_version: 1
+rules:
+  - id: exchange_server
+    product: Exchange Server
+    applies_to: {versions: [SE], editions: [Standard, Enterprise], agreements: [EA]}
+    parameters: {per_instance: 1}
+    logic: exchange_server
+    source:
+      document: Microsoft Exchange licensing FAQs
+      section: Microsoft Exchange Server Subscription Edition licensing updates (entitlement); Server licensing (running instances)
+      url: https://www.microsoft.com/en-ca/microsoft-365/exchange/microsoft-exchange-licensing-faq-email-for-business
+    effective_date: '2026-11-01'
+    verified: false
+    verified_by: null
+    verified_on: null
+    notes: One license per running instance under traditional license plus active SA. Microsoft 365 Extended Use Rights and equivalent entitlements require review and are not calculated.
+  - id: exchange_cal
+    product: Exchange Server
+    applies_to: {versions: [SE], editions: [Standard, Enterprise], agreements: [EA]}
+    parameters: {per_accessor: 1, external_base_cals: 0}
+    logic: exchange_cal
+    source:
+      document: Microsoft Product Terms - Exchange Server (EA)
+      section: Use Rights - External User Access Requirements; Access Licenses - Server Software Access and Additional Functionality
+      url: https://www.microsoft.com/licensing/terms/productoffering/ExchangeServer/EAEAS
+    effective_date: '2026-11-01'
+    verified: false
+    verified_by: null
+    verified_on: null
+    notes: Enterprise CALs are additive and independent of server edition. External base access is included; external additional functionality requires both base and additive CALs and is deferred for review.

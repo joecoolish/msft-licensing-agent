@@ -1,0 +1,21 @@
+id: sql-passive-onprem-ha-and-dr
+expert_reviewed: false
+inventory:
+  context: {agreement_type: EA, software_assurance: {SQL Server: 'yes'}, subscription: {SQL Server: 'no'}}
+  hosts:
+    - {id: h1, processors: null, cores_per_processor: null, hypervisor: VMware, cluster_id: null}
+    - {id: h2, processors: null, cores_per_processor: null, hypervisor: VMware, cluster_id: null}
+    - {id: h3, processors: null, cores_per_processor: null, hypervisor: VMware, cluster_id: null}
+  os_environments:
+    - {id: primary, host_id: h1, cluster_id: null, kind: virtual, virtual_cores: 4, hardware_threads: 4, workloads: [SQL Server], sql_role: active}
+    - {id: ha, host_id: h2, cluster_id: null, kind: virtual, virtual_cores: 4, hardware_threads: 4, workloads: [SQL Server], sql_role: passive, primary_ose_id: primary, failover_purpose: HA, serves_data: false}
+    - {id: dr, host_id: h3, cluster_id: null, kind: virtual, virtual_cores: 4, hardware_threads: 4, workloads: [SQL Server], sql_role: passive, primary_ose_id: primary, failover_purpose: DR, serves_data: false, asynchronous_manual: true}
+  products:
+    - {product: SQL Server, edition: Standard, version: '2025', where_deployed: [primary, ha, dr], licensing_model: per_vm, license_mobility_through_sa: false}
+  users_devices: null
+expected:
+  line_items:
+    - {product: SQL Server, edition: Standard, license_type: 2-core pack, quantity: 2}
+    - {product: SQL Server, edition: Standard, license_type: Additional failover core licenses, quantity: 0}
+  missing_inputs: []
+  unverified_rules_used: [sql_vm, sql_failover]

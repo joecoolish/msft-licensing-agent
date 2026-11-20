@@ -1,0 +1,18 @@
+id: system-center-managed-ose-stacking
+expert_reviewed: false
+inventory:
+  context: {agreement_type: EA, software_assurance: null, subscription: null}
+  hosts:
+    - {id: h1, processors: 2, cores_per_processor: 12, hypervisor: VMware, cluster_id: null}
+  os_environments:
+    - {id: v0, host_id: h1, cluster_id: null, kind: virtual, virtual_cores: 4, workloads: [System Center], server_os: true}
+    - {id: v1, host_id: h1, cluster_id: null, kind: virtual, virtual_cores: 4, workloads: [System Center], server_os: true}
+    - {id: v2, host_id: h1, cluster_id: null, kind: virtual, virtual_cores: 4, workloads: [System Center], server_os: true}
+  products:
+    - {product: System Center, edition: Standard, version: '2025', where_deployed: [v0, v1, v2], licensing_model: physical_core}
+  users_devices: null
+expected:
+  line_items:
+    - {product: System Center, edition: Standard, license_type: 2-core pack, quantity: 24}
+  missing_inputs: []
+  unverified_rules_used: [system_center_physical]

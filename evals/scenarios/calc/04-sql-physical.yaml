@@ -1,0 +1,16 @@
+id: sql-physical-minimum-per-processor
+expert_reviewed: false
+inventory:
+  context: {agreement_type: EA, software_assurance: {SQL Server: 'no'}, subscription: {SQL Server: 'no'}}
+  hosts:
+    - {id: h1, processors: 2, cores_per_processor: 2, hypervisor: none, cluster_id: null}
+  os_environments:
+    - {id: p0, host_id: h1, cluster_id: null, kind: physical, virtual_cores: null, workloads: [SQL Server], sql_role: active}
+  products:
+    - {product: SQL Server, edition: Standard, version: '2025', where_deployed: [p0], licensing_model: physical_core}
+  users_devices: null
+expected:
+  line_items:
+    - {product: SQL Server, edition: Standard, license_type: 2-core pack, quantity: 4}
+  missing_inputs: []
+  unverified_rules_used: [sql_physical]

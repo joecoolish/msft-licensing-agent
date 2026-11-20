@@ -1,0 +1,28 @@
+id: sharepoint-se-server-instances-additive-cals
+expert_reviewed: false
+inventory:
+  context: {agreement_type: EA, software_assurance: {SharePoint Server: 'yes'}, subscription: {SharePoint Server: 'no'}}
+  hosts:
+    - {id: h1, processors: null, cores_per_processor: null, hypervisor: Hyper-V, cluster_id: null}
+  os_environments:
+    - {id: v0, host_id: h1, cluster_id: null, kind: virtual, virtual_cores: null, workloads: [SharePoint Server]}
+    - {id: v1, host_id: h1, cluster_id: null, kind: virtual, virtual_cores: null, workloads: [SharePoint Server]}
+  products:
+    - product: SharePoint Server
+      edition: Standard
+      version: SE
+      where_deployed: [v0, v1]
+      licensing_model: server_cal
+      instances_per_ose: {v0: 1, v1: 2}
+      cal_entitlement_active: 'yes'
+      enterprise_features: true
+      public_content_only: false
+      enterprise_population: {internal_users: 10, devices: 5, external_users: 0, cal_preference: user, complete_population: true}
+  users_devices: {internal_users: 25, devices: 12, external_users: 50, cal_preference: user, complete_population: true}
+expected:
+  line_items:
+    - {product: SharePoint Server, edition: Standard, license_type: Server, quantity: 3}
+    - {product: SharePoint Server, edition: Standard, license_type: User CAL, quantity: 25}
+    - {product: SharePoint Server, edition: Enterprise, license_type: Enterprise User CAL, quantity: 10}
+  missing_inputs: []
+  unverified_rules_used: [sharepoint_server, sharepoint_cal]

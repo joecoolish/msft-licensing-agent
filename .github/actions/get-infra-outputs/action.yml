@@ -1,0 +1,38 @@
+name: Get infrastructure outputs
+description: Export the stable environment deployment outputs without Azure credentials.
+inputs:
+  environment:
+    description: dev or prod
+    required: true
+  resource-group:
+    description: Target Azure resource group
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Export infrastructure outputs
+      shell: bash
+      env:
+        TARGET_ENVIRONMENT: ${{ inputs.environment }}
+        TARGET_RESOURCE_GROUP: ${{ inputs.resource-group }}
+      run: |
+        set -euo pipefail
+        [[ "$TARGET_ENVIRONMENT" == dev || "$TARGET_ENVIRONMENT" == prod ]]
+        outputs=$(az deployment group show --resource-group "$TARGET_RESOURCE_GROUP" \
+          --name "licensing-agent-$TARGET_ENVIRONMENT" --query properties.outputs -o json)
+        for mapping in \
+          projectEndpoint:PROJECT_ENDPOINT \
+          modelDeploymentName:MODEL_DEPLOYMENT_NAME \
+          acrLoginServer:ACR_LOGIN_SERVER \
+          containerAppName:CONTAINER_APP_NAME \
+          apiUrl:API_URL \
+          apiIdentityClientId:API_IDENTITY_CLIENT_ID \
+          storageAccountName:STORAGE_ACCOUNT_NAME \
+          cosmosEndpoint:COSMOS_ENDPOINT \
+          appInsightsConnectionString:APPLICATIONINSIGHTS_CONNECTION_STRING; do
+          key=${mapping%%:*}
+          name=${mapping#*:}
+          value=$(jq -er --arg key "$key" '.[$key].value | select(type == "string" and length > 0)' <<<"$outputs")
+          [[ "$value" != *$'\n'* && "$value" != *$'\r'* ]] || { echo "::error::Invalid multiline output $key"; exit 1; }
+          printf '%s=%s\n' "$name" "$value" >>"$GITHUB_ENV"
+        done

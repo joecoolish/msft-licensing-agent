@@ -1,0 +1,96 @@
+name: Infrastructure
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'infra/**'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target GitHub environment
+        type: choice
+        options: [dev, prod]
+        default: dev
+        required: true
+permissions:
+  contents: read
+concurrency:
+  group: infra-${{ inputs.environment || 'dev' }}
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    environment: ${{ inputs.environment || 'dev' }}
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      ENVIRONMENT_NAME: ${{ inputs.environment || 'dev' }}
+      AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+      AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+      AZURE_CLOUD: ${{ vars.AZURE_CLOUD }}
+      NAME_PREFIX: ${{ vars.NAME_PREFIX }}
+      DEPLOY_PRINCIPAL_ID: ${{ vars.DEPLOY_PRINCIPAL_ID }}
+      API_APP_ID_URI: ${{ vars.API_APP_ID_URI }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check bootstrap configuration
+        shell: bash
+        env:
+          CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+          TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+          SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+        run: |
+          set -euo pipefail
+          for key in CLIENT_ID TENANT_ID SUBSCRIPTION_ID AZURE_RESOURCE_GROUP AZURE_LOCATION AZURE_CLOUD NAME_PREFIX DEPLOY_PRINCIPAL_ID API_APP_ID_URI; do
+            [[ -n "${!key}" ]] || { echo "::error::Missing environment variable $key. Complete bootstrap and any manual Entra steps."; exit 1; }
+          done
+          [[ "$AZURE_CLOUD" == AzureCloud || "$AZURE_CLOUD" == AzureUSGovernment ]]
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          environment: ${{ vars.AZURE_CLOUD }}
+          audience: ${{ vars.AZURE_CLOUD == 'AzureUSGovernment' && 'api://AzureADTokenExchangeUSGov' || 'api://AzureADTokenExchange' }}
+      - name: Install Bicep
+        run: az bicep install
+      - name: Preserve the deployed API image
+        id: image
+        shell: bash
+        run: bash scripts/get-api-image.sh
+      - name: Validate, preview, and deploy
+        shell: bash
+        env:
+          API_IMAGE: ${{ steps.image.outputs.image }}
+        run: |
+          set -euo pipefail
+          parameters="infra/env/$ENVIRONMENT_NAME.bicepparam"
+          # Compile bicepparam first so all commands consume the identical parameters.
+          mkdir -p build
+          az bicep build --file infra/main.bicep --outfile build/main.json
+          az bicep build-params --file "$parameters" --outfile build/parameters.json
+          args=(--resource-group "$AZURE_RESOURCE_GROUP" --name "licensing-agent-$ENVIRONMENT_NAME"
+                --template-file build/main.json --parameters @build/parameters.json --parameters "apiImage=$API_IMAGE")
+          az deployment group validate "${args[@]}" --output none
+          if az deployment group what-if "${args[@]}" --no-pretty-print >build/what-if.json; then
+            {
+              echo '## Infrastructure what-if'
+              echo '```json'
+              cat build/what-if.json
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            cat build/what-if.json >&2
+            echo "::error::What-if failed; no deployment was started."
+            exit 1
+          fi
+          az deployment group create "${args[@]}" --output none
+      - name: Wait for standard-agent capability hosts
+        shell: bash
+        run: bash scripts/poll-capability-hosts.sh
+      - uses: ./.github/actions/get-infra-outputs
+        with:
+          environment: ${{ env.ENVIRONMENT_NAME }}
+          resource-group: ${{ env.AZURE_RESOURCE_GROUP }}

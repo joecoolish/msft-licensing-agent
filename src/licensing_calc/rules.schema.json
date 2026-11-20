@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Versioned licensing rule family",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "rules"],
+  "$defs": {
+    "positive": {"type": "integer", "minimum": 1},
+    "physical": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["min_per_processor", "min_per_server", "pack_size", "standard_oses"],
+      "properties": {
+        "min_per_processor": {"$ref": "#/$defs/positive"},
+        "min_per_server": {"$ref": "#/$defs/positive"},
+        "pack_size": {"$ref": "#/$defs/positive"},
+        "standard_oses": {"$ref": "#/$defs/positive"}
+      }
+    },
+    "sql_physical": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["min_per_processor", "pack_size"],
+      "properties": {
+        "min_per_processor": {"$ref": "#/$defs/positive"},
+        "pack_size": {"$ref": "#/$defs/positive"}
+      }
+    }
+  },
+  "properties": {
+    "schema_version": {"const": 1},
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "product", "applies_to", "parameters", "logic", "source", "effective_date", "verified_by", "verified_on", "notes"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z][a-z0-9_]+$"},
+          "product": {"enum": ["Windows Server", "RDS", "SQL Server", "SharePoint Server", "Exchange Server", "System Center"]},
+          "applies_to": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["versions", "editions", "agreements"],
+            "properties": {
+              "versions": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+              "editions": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+              "agreements": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["EA", "CSP", "MPSA", "Select Plus", "OEM"]}}
+            }
+          },
+          "parameters": {
+            "type": "object",
+            "additionalProperties": {"type": "integer", "minimum": 0}
+          },
+          "logic": {"type": "string", "pattern": "^[a-z][a-z0-9_]+$"},
+          "source": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["document", "section", "url"],
+            "properties": {
+              "document": {"type": "string", "minLength": 1},
+              "section": {"type": "string", "minLength": 1},
+              "url": {"type": "string", "pattern": "^https://(www\\.)?microsoft\\.com/"}
+            }
+          },
+          "effective_date": {"type": "string", "format": "date"},
+          "verified": {"type": "boolean", "default": false},
+          "verified_by": {"type": ["string", "null"]},
+          "verified_on": {"type": ["string", "null"], "format": "date"},
+          "notes": {"type": "string", "minLength": 1}
+        },
+        "allOf": [
+          {
+            "if": {"required": ["verified"], "properties": {"verified": {"const": true}}},
+            "then": {"properties": {
+              "verified_by": {"type": "string", "minLength": 1},
+              "verified_on": {"type": "string", "format": "date"}
+            }}
+          },
+          {
+            "if": {"properties": {"id": {"enum": ["windows_physical", "system_center_physical"]}}},
+            "then": {"properties": {"parameters": {"$ref": "#/$defs/physical"}}}
+          },
+          {
+            "if": {"properties": {"id": {"enum": ["sql_physical", "sql_unlimited"]}}},
+            "then": {"properties": {"parameters": {"$ref": "#/$defs/sql_physical"}}}
+          },
+          {
+            "if": {"properties": {"id": {"const": "sql_vm"}}},
+            "then": {"properties": {"parameters": {
+              "additionalProperties": false,
+              "required": ["min_per_vm", "pack_size"],
+              "properties": {
+                "min_per_vm": {"$ref": "#/$defs/positive"},
+                "pack_size": {"$ref": "#/$defs/positive"}
+              }
+            }}}
+          },
+          {
+            "if": {"properties": {"id": {"enum": ["windows_cal", "rds_cal"]}}},
+            "then": {"properties": {"parameters": {
+              "additionalProperties": false,
+              "required": ["per_accessor"],
+              "properties": {"per_accessor": {"$ref": "#/$defs/positive"}}
+            }}}
+          },
+          {
+            "if": {"properties": {"id": {"const": "sql_server_cal"}}},
+            "then": {"properties": {"parameters": {
+              "additionalProperties": false,
+              "required": ["per_ose", "per_accessor"],
+              "properties": {
+                "per_ose": {"$ref": "#/$defs/positive"},
+                "per_accessor": {"$ref": "#/$defs/positive"}
+              }
+            }}}
+          },
+          {
+            "if": {"properties": {"id": {"const": "sql_failover"}}},
+            "then": {"properties": {"parameters": {
+              "additionalProperties": false,
+              "required": ["ha_oses", "onprem_dr_oses", "waived_licenses"],
+              "properties": {
+                "ha_oses": {"$ref": "#/$defs/positive"},
+                "onprem_dr_oses": {"$ref": "#/$defs/positive"},
+                "waived_licenses": {"const": 0}
+              }
+            }}}
+          },
+          {
+            "if": {"properties": {"id": {"enum": ["sharepoint_server", "exchange_server"]}}},
+            "then": {"properties": {"parameters": {
+              "additionalProperties": false,
+              "required": ["per_instance"],
+              "properties": {"per_instance": {"$ref": "#/$defs/positive"}}
+            }}}
+          },
+          {
+            "if": {"properties": {"id": {"const": "sharepoint_cal"}}},
+            "then": {"properties": {"parameters": {
+              "additionalProperties": false,
+              "required": ["per_accessor", "external_cals", "public_cals"],
+              "properties": {
+                "per_accessor": {"$ref": "#/$defs/positive"},
+                "external_cals": {"const": 0},
+                "public_cals": {"const": 0}
+              }
+            }}}
+          },
+          {
+            "if": {"properties": {"id": {"const": "exchange_cal"}}},
+            "then": {"properties": {"parameters": {
+              "additionalProperties": false,
+              "required": ["per_accessor", "external_base_cals"],
+              "properties": {
+                "per_accessor": {"$ref": "#/$defs/positive"},
+                "external_base_cals": {"const": 0}
+              }
+            }}}
+          }
+        ]
+      }
+    }
+  }
+}

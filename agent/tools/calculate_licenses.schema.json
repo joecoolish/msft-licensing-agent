@@ -1,0 +1,704 @@
+{
+  "$defs": {
+    "Host": {
+      "additionalProperties": false,
+      "properties": {
+        "cluster_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Cluster Id"
+        },
+        "cores_per_processor": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Cores Per Processor"
+        },
+        "hypervisor": {
+          "anyOf": [
+            {
+              "enum": [
+                "none",
+                "Hyper-V",
+                "VMware",
+                "other"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Hypervisor"
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "processors": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Processors"
+        }
+      },
+      "required": [
+        "id",
+        "processors",
+        "cores_per_processor",
+        "hypervisor",
+        "cluster_id"
+      ],
+      "title": "Host",
+      "type": "object"
+    },
+    "LicensingContext": {
+      "additionalProperties": false,
+      "properties": {
+        "agreement_type": {
+          "anyOf": [
+            {
+              "enum": [
+                "EA",
+                "CSP",
+                "MPSA",
+                "Select Plus",
+                "OEM",
+                "unknown"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Agreement Type"
+        },
+        "software_assurance": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "enum": [
+                      "yes",
+                      "no",
+                      "unknown"
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "propertyNames": {
+                "enum": [
+                  "Windows Server",
+                  "RDS",
+                  "SQL Server",
+                  "SharePoint Server",
+                  "Exchange Server",
+                  "System Center"
+                ]
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Software Assurance"
+        },
+        "subscription": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "enum": [
+                      "yes",
+                      "no",
+                      "unknown"
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "propertyNames": {
+                "enum": [
+                  "Windows Server",
+                  "RDS",
+                  "SQL Server",
+                  "SharePoint Server",
+                  "Exchange Server",
+                  "System Center"
+                ]
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Subscription"
+        }
+      },
+      "required": [
+        "agreement_type",
+        "software_assurance",
+        "subscription"
+      ],
+      "title": "LicensingContext",
+      "type": "object"
+    },
+    "OperatingEnvironment": {
+      "additionalProperties": false,
+      "properties": {
+        "asynchronous_manual": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Asynchronous Manual"
+        },
+        "cluster_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Cluster Id"
+        },
+        "failover_purpose": {
+          "anyOf": [
+            {
+              "enum": [
+                "HA",
+                "DR"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Failover Purpose"
+        },
+        "hardware_threads": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Hardware Threads"
+        },
+        "host_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Host Id"
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "anyOf": [
+            {
+              "enum": [
+                "physical",
+                "virtual"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Kind"
+        },
+        "management_only": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Management Only"
+        },
+        "primary_ose_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Primary Ose Id"
+        },
+        "server_os": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "True for a server OS; required for System Center server MLs.",
+          "title": "Server Os"
+        },
+        "serves_data": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Serves Data"
+        },
+        "sql_role": {
+          "anyOf": [
+            {
+              "enum": [
+                "active",
+                "passive"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sql Role"
+        },
+        "virtual_cores": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Virtual Cores"
+        },
+        "workloads": {
+          "anyOf": [
+            {
+              "items": {
+                "enum": [
+                  "Windows Server",
+                  "RDS",
+                  "SQL Server",
+                  "SharePoint Server",
+                  "Exchange Server",
+                  "System Center"
+                ],
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Workloads"
+        }
+      },
+      "required": [
+        "id",
+        "host_id",
+        "cluster_id",
+        "kind",
+        "virtual_cores",
+        "workloads"
+      ],
+      "title": "OperatingEnvironment",
+      "type": "object"
+    },
+    "Population": {
+      "additionalProperties": false,
+      "properties": {
+        "cal_preference": {
+          "anyOf": [
+            {
+              "enum": [
+                "user",
+                "device",
+                "unknown"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Cal Preference"
+        },
+        "complete_population": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Complete Population"
+        },
+        "devices": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Internal accessors' devices, including shared, home, and mobile devices.",
+          "title": "Devices"
+        },
+        "external_users": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "External Users"
+        },
+        "internal_users": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Internal Users"
+        }
+      },
+      "required": [
+        "internal_users",
+        "devices",
+        "external_users",
+        "cal_preference"
+      ],
+      "title": "Population",
+      "type": "object"
+    },
+    "ProductDeployment": {
+      "additionalProperties": false,
+      "properties": {
+        "cal_entitlement_active": {
+          "anyOf": [
+            {
+              "enum": [
+                "yes",
+                "no",
+                "unknown"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cal Entitlement Active"
+        },
+        "edition": {
+          "anyOf": [
+            {
+              "enum": [
+                "Standard",
+                "Datacenter",
+                "Enterprise"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Edition"
+        },
+        "enterprise_features": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Enterprise Features"
+        },
+        "enterprise_population": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Population"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "instances_per_ose": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "exclusiveMinimum": 0,
+                "type": "integer"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Running software instances in each targeted OSE, for SE servers.",
+          "title": "Instances Per Ose"
+        },
+        "license_mobility_through_sa": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "License Mobility Through Sa"
+        },
+        "licensing_model": {
+          "anyOf": [
+            {
+              "enum": [
+                "physical_core",
+                "per_vm",
+                "server_cal",
+                "unlimited_virtualization"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Licensing Model"
+        },
+        "population": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Population"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "product": {
+          "enum": [
+            "Windows Server",
+            "RDS",
+            "SQL Server",
+            "SharePoint Server",
+            "Exchange Server",
+            "System Center"
+          ],
+          "title": "Product",
+          "type": "string"
+        },
+        "public_content_only": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Public Content Only"
+        },
+        "version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Version"
+        },
+        "where_deployed": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Complete list of OSE IDs. System Center targets are managed server OSEs.",
+          "title": "Where Deployed"
+        }
+      },
+      "required": [
+        "product",
+        "edition",
+        "version",
+        "where_deployed",
+        "licensing_model"
+      ],
+      "title": "ProductDeployment",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "context": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/LicensingContext"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "hosts": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/Host"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Hosts"
+    },
+    "os_environments": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/OperatingEnvironment"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Os Environments"
+    },
+    "products": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/ProductDeployment"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Products"
+    },
+    "users_devices": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Population"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "context",
+    "hosts",
+    "os_environments",
+    "products",
+    "users_devices"
+  ],
+  "title": "Inventory",
+  "type": "object"
+}

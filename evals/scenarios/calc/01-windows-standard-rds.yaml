@@ -1,0 +1,26 @@
+id: windows-standard-stacking-and-rds
+expert_reviewed: false
+inventory:
+  context: {agreement_type: EA, software_assurance: null, subscription: null}
+  hosts:
+    - {id: h1, processors: 2, cores_per_processor: 6, hypervisor: Hyper-V, cluster_id: null}
+  os_environments:
+    - {id: v0, host_id: h1, cluster_id: null, kind: virtual, virtual_cores: 4, workloads: [Windows Server, RDS]}
+    - {id: v1, host_id: h1, cluster_id: null, kind: virtual, virtual_cores: 4, workloads: [Windows Server]}
+    - {id: v2, host_id: h1, cluster_id: null, kind: virtual, virtual_cores: 4, workloads: [Windows Server]}
+  products:
+    - {product: Windows Server, edition: Standard, version: '2025', where_deployed: [v0, v1, v2], licensing_model: physical_core}
+    - product: RDS
+      edition: Standard
+      version: '2025'
+      where_deployed: [v0]
+      licensing_model: server_cal
+      population: {internal_users: 10, devices: 5, external_users: 0, cal_preference: user, complete_population: true}
+  users_devices: {internal_users: 25, devices: 12, external_users: 0, cal_preference: user, complete_population: true}
+expected:
+  line_items:
+    - {product: Windows Server, edition: Standard, license_type: 2-core pack, quantity: 16}
+    - {product: Windows Server, edition: Not edition-specific, license_type: User CAL, quantity: 25}
+    - {product: RDS, edition: Not edition-specific, license_type: User CAL, quantity: 10}
+  missing_inputs: []
+  unverified_rules_used: [windows_physical, windows_cal, rds_cal]

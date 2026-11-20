@@ -1,0 +1,26 @@
+id: exchange-enterprise-se-independent-cal-features
+expert_reviewed: false
+inventory:
+  context: {agreement_type: EA, software_assurance: {Exchange Server: 'yes'}, subscription: {Exchange Server: 'no'}}
+  hosts:
+    - {id: h1, processors: null, cores_per_processor: null, hypervisor: Hyper-V, cluster_id: null}
+  os_environments:
+    - {id: v0, host_id: h1, cluster_id: null, kind: virtual, virtual_cores: null, workloads: [Exchange Server]}
+  products:
+    - product: Exchange Server
+      edition: Enterprise
+      version: SE
+      where_deployed: [v0]
+      licensing_model: server_cal
+      instances_per_ose: {v0: 2}
+      cal_entitlement_active: 'yes'
+      enterprise_features: true
+      enterprise_population: {internal_users: 5, devices: 3, external_users: 0, cal_preference: user, complete_population: true}
+  users_devices: {internal_users: 25, devices: 12, external_users: 0, cal_preference: user, complete_population: true}
+expected:
+  line_items:
+    - {product: Exchange Server, edition: Enterprise, license_type: Server, quantity: 2}
+    - {product: Exchange Server, edition: Standard, license_type: User CAL, quantity: 25}
+    - {product: Exchange Server, edition: Enterprise, license_type: Enterprise User CAL, quantity: 5}
+  missing_inputs: []
+  unverified_rules_used: [exchange_server, exchange_cal]

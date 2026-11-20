@@ -1,0 +1,17 @@
+id: sql-vm-minimum-and-hardware-threads
+expert_reviewed: false
+inventory:
+  context: {agreement_type: EA, software_assurance: {SQL Server: 'yes'}, subscription: {SQL Server: 'no'}}
+  hosts:
+    - {id: h1, processors: null, cores_per_processor: null, hypervisor: VMware, cluster_id: null}
+  os_environments:
+    - {id: v0, host_id: h1, cluster_id: null, kind: virtual, virtual_cores: 2, hardware_threads: 2, workloads: [SQL Server], sql_role: active}
+    - {id: v1, host_id: h1, cluster_id: null, kind: virtual, virtual_cores: 5, hardware_threads: 6, workloads: [SQL Server], sql_role: active}
+  products:
+    - {product: SQL Server, edition: Standard, version: '2025', where_deployed: [v0, v1], licensing_model: per_vm}
+  users_devices: null
+expected:
+  line_items:
+    - {product: SQL Server, edition: Standard, license_type: 2-core pack, quantity: 5}
+  missing_inputs: []
+  unverified_rules_used: [sql_vm]

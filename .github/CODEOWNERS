@@ -1,0 +1,4 @@
+# Replace this placeholder with a real GitHub user/team before enforcing review.
+/src/licensing_calc/rules/ @<licensing-reviewers>
+/src/licensing_calc/rules.schema.json @<licensing-reviewers>
+/evals/scenarios/ @<licensing-reviewers>

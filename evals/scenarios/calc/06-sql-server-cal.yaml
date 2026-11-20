@@ -1,0 +1,18 @@
+id: sql-server-cal-device-population
+expert_reviewed: false
+inventory:
+  context: {agreement_type: EA, software_assurance: {SQL Server: 'no'}, subscription: {SQL Server: 'no'}}
+  hosts:
+    - {id: h1, processors: null, cores_per_processor: null, hypervisor: VMware, cluster_id: null}
+  os_environments:
+    - {id: v0, host_id: h1, cluster_id: null, kind: virtual, virtual_cores: null, workloads: [SQL Server], sql_role: active}
+    - {id: v1, host_id: h1, cluster_id: null, kind: virtual, virtual_cores: null, workloads: [SQL Server], sql_role: active}
+  products:
+    - {product: SQL Server, edition: Standard, version: '2025', where_deployed: [v0, v1], licensing_model: server_cal}
+  users_devices: {internal_users: 25, devices: 12, external_users: 0, cal_preference: device, complete_population: true}
+expected:
+  line_items:
+    - {product: SQL Server, edition: Standard, license_type: Server, quantity: 2}
+    - {product: SQL Server, edition: Not edition-specific, license_type: Device CAL, quantity: 12}
+  missing_inputs: []
+  unverified_rules_used: [sql_server_cal]

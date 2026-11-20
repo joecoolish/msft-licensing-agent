@@ -1,0 +1,42 @@
+name: Copilot setup steps
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+  pull_request:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+permissions:
+  contents: read
+jobs:
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Azure CLI and Bicep
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! command -v az >/dev/null; then
+            curl --fail --silent --show-error --location https://aka.ms/InstallAzureCLIDeb -o /tmp/install-azure-cli.sh
+            sudo bash /tmp/install-azure-cli.sh
+            rm /tmp/install-azure-cli.sh
+          fi
+          az bicep install
+      - name: Install project dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install -e '.[dev]'
+          if [[ -f web/package.json ]]; then
+            npm ci --prefix web
+          fi

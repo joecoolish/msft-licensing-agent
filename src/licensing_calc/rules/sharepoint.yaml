@@ -1,0 +1,30 @@
+schema_version: 1
+rules:
+  - id: sharepoint_server
+    product: SharePoint Server
+    applies_to: {versions: [SE], editions: [Standard], agreements: [EA]}
+    parameters: {per_instance: 1}
+    logic: sharepoint_server
+    source:
+      document: Microsoft SharePoint Server licensing guidance
+      section: Licensing model; Example scenarios - Server (one license per running instance)
+      url: https://www.microsoft.com/licensing/guidance/SharePoint-Server
+    effective_date: '2026-11-01'
+    verified: false
+    verified_by: null
+    verified_on: null
+    notes: Standard labels the base server, not a separate Enterprise server SKU. Active SA or subscription is required for server and CALs. Confirm the snapshot with the linked EA Product Terms.
+  - id: sharepoint_cal
+    product: SharePoint Server
+    applies_to: {versions: [SE], editions: [Standard], agreements: [EA]}
+    parameters: {per_accessor: 1, external_cals: 0, public_cals: 0}
+    logic: sharepoint_cal
+    source:
+      document: Microsoft Product Terms - SharePoint Server (EA)
+      section: Use Rights; Server Software Access; Additional SharePoint Server Functionality; CAL Waiver for Users Accessing Publicly Available Content
+      url: https://www.microsoft.com/licensing/terms/productoffering/SharePointServer/EAEAS
+    effective_date: '2026-11-01'
+    verified: false
+    verified_by: null
+    verified_on: null
+    notes: Enterprise CAL is additive based on feature access, never inferred from server edition. External access is licensed with the server.

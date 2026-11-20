@@ -1,0 +1,72 @@
+schema_version: 1
+rules:
+  - id: sql_physical
+    product: SQL Server
+    applies_to: {versions: ['2025'], editions: [Standard, Enterprise], agreements: [EA]}
+    parameters: {min_per_processor: 4, pack_size: 2}
+    logic: sql_physical
+    source:
+      document: Microsoft Product Terms - SQL Server (EA)
+      section: Per Core - Licensing by Physical Core on a Server, paragraphs 2-5; Availability (2-packs)
+      url: https://www.microsoft.com/licensing/terms/productoffering/SQLServer/EAEAS
+    effective_date: '2026-11-01'
+    verified: false
+    verified_by: null
+    verified_on: null
+    notes: Standard covers only the physical OSE. Enterprise OSE allowance equals assigned core licenses, with one additional core per excess OSE.
+  - id: sql_vm
+    product: SQL Server
+    applies_to: {versions: ['2025'], editions: [Standard, Enterprise], agreements: [EA]}
+    parameters: {min_per_vm: 4, pack_size: 2}
+    logic: sql_vm
+    source:
+      document: Microsoft Product Terms - SQL Server (EA)
+      section: Per Core - Licensing by Individual Virtual OSE, paragraphs 1-3; Availability (2-packs)
+      url: https://www.microsoft.com/licensing/terms/productoffering/SQLServer/EAEAS
+    effective_date: '2026-11-01'
+    verified: false
+    verified_by: null
+    verified_on: null
+    notes: Requires active SA or subscription. Hardware threads must be declared; mapped hardware threads can exceed virtual cores. No containers or mobility advice.
+  - id: sql_server_cal
+    product: SQL Server
+    applies_to: {versions: ['2025'], editions: [Standard], agreements: [EA]}
+    parameters: {per_ose: 1, per_accessor: 1}
+    logic: sql_server_cal
+    source:
+      document: Microsoft Product Terms - SQL Server (EA)
+      section: Product-Specific License Terms - Running Instances of the Server Software; Server/CAL - Access Licenses; Access Licenses
+      url: https://www.microsoft.com/licensing/terms/productoffering/SQLServer/EAEAS
+    effective_date: '2026-11-01'
+    verified: false
+    verified_by: null
+    verified_on: null
+    notes: One Server license per OSE under the SQL product-specific unlimited-instances-in-one-OSE term; all accessors require CALs, including indirect access. No legacy Enterprise Server/CAL.
+  - id: sql_unlimited
+    product: SQL Server
+    applies_to: {versions: ['2025'], editions: [Enterprise], agreements: [EA]}
+    parameters: {min_per_processor: 4, pack_size: 2}
+    logic: sql_unlimited
+    source:
+      document: Microsoft Product Terms - SQL Server (EA)
+      section: Per Core - Licensing by Physical Core; Software Assurance - SQL Server Enterprise Core - Unlimited Virtualization
+      url: https://www.microsoft.com/licensing/terms/productoffering/SQLServer/EAEAS
+    effective_date: '2026-11-01'
+    verified: false
+    verified_by: null
+    verified_on: null
+    notes: All physical cores licensed with Enterprise and active SA or equivalent subscription rights.
+  - id: sql_failover
+    product: SQL Server
+    applies_to: {versions: ['2025'], editions: [Standard, Enterprise], agreements: [EA]}
+    parameters: {ha_oses: 1, onprem_dr_oses: 1, waived_licenses: 0}
+    logic: sql_failover
+    source:
+      document: Microsoft Product Terms - SQL Server (EA)
+      section: Software Assurance - SQL Server - Fail-over Rights
+      url: https://www.microsoft.com/licensing/terms/productoffering/SQLServer/EAEAS
+    effective_date: '2026-11-01'
+    verified: false
+    verified_by: null
+    verified_on: null
+    notes: Only per-VM core, on-prem passive HA/DR is automated. Requires SA-equivalent entitlement, no serving data, sufficient primary entitlement, no License Mobility through SA; DR must be asynchronous/manual. Azure DR and maintenance/test windows are not calculated.

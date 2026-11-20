@@ -1,0 +1,44 @@
+schema_version: 1
+rules:
+  - id: windows_physical
+    product: Windows Server
+    applies_to: {versions: ['2025'], editions: [Standard, Datacenter], agreements: [EA]}
+    parameters: {min_per_processor: 8, min_per_server: 16, pack_size: 2, standard_oses: 2}
+    logic: windows_physical
+    source:
+      document: Microsoft Product Terms - Windows Server (EA)
+      section: Per Core/CAL - Server Licenses (per core), paragraphs 2-4; Availability (2-packs)
+      url: https://www.microsoft.com/licensing/terms/productoffering/WindowsServerStandardDatacenterEssentials/EAEAS
+    effective_date: '2026-11-01'
+    verified: false
+    verified_by: null
+    verified_on: null
+    notes: November 2026 terms snapshot, not historical entitlement advice. Fixed-host physical licensing only. Standard excludes a physical OSE only when explicitly management-only.
+  - id: windows_cal
+    product: Windows Server
+    applies_to: {versions: ['2025'], editions: [Standard, Datacenter], agreements: [EA]}
+    parameters: {per_accessor: 1}
+    logic: windows_cal
+    source:
+      document: Microsoft Product Terms - Windows Server (EA)
+      section: Per Core/CAL - Access Licenses; Access Licenses - Server Software Access
+      url: https://www.microsoft.com/licensing/terms/productoffering/WindowsServerStandardDatacenterEssentials/EAEAS
+    effective_date: '2026-11-01'
+    verified: false
+    verified_by: null
+    verified_on: null
+    notes: Gross base CALs for the declared complete population; no netting of existing CALs or equivalent suites. External access and exemptions require review.
+  - id: rds_cal
+    product: RDS
+    applies_to: {versions: ['2025'], editions: [Standard, Datacenter], agreements: [EA]}
+    parameters: {per_accessor: 1}
+    logic: rds_cal
+    source:
+      document: Microsoft Product Terms - Windows Server (EA)
+      section: Access Licenses - Additional Functionality Associated with Windows Server 2025 Remote Desktop Services CAL
+      url: https://www.microsoft.com/licensing/terms/productoffering/WindowsServerStandardDatacenterEssentials/EAEAS
+    effective_date: '2026-11-01'
+    verified: false
+    verified_by: null
+    verified_on: null
+    notes: Additive to Windows Server base CAL; population must represent RDS accessors, not concurrent sessions.

@@ -1,0 +1,16 @@
+schema_version: 1
+rules:
+  - id: system_center_physical
+    product: System Center
+    applies_to: {versions: ['2025'], editions: [Standard, Datacenter], agreements: [EA]}
+    parameters: {min_per_processor: 8, min_per_server: 16, pack_size: 2, standard_oses: 2}
+    logic: system_center_physical
+    source:
+      document: Microsoft Product Terms - System Center Server (EA)
+      section: Server Management Licenses (per core), paragraphs 2-5; Availability (2-packs)
+      url: https://www.microsoft.com/licensing/terms/productoffering/SystemCenterServer/EAEAS
+    effective_date: '2026-11-01'
+    verified: false
+    verified_by: null
+    verified_on: null
+    notes: Targets are managed server OSEs, not the management server installation. Standard management-only physical OSE exclusion requires explicit confirmation. No client management or Azure rights.
